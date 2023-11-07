@@ -1,0 +1,2675 @@
+SELECT
+    "TQ0_Q_MSU_Details"."Footprint" AS "Footprint", 
+    "TQ0_Q_MSU_Details"."LPAR" AS "LPAR", 
+    "TQ0_Q_MSU_Details"."DATETIME" AS "DATETIME", 
+    "TQ0_Q_MSU_Details"."READER_TIMESTAMP" AS "READER_TIMESTAMP", 
+    "TQ0_Q_MSU_Details"."SUBSYSTEM_ID" AS "SUBSYSTEM_ID", 
+    "TQ0_Q_MSU_Details"."JOB_NAME" AS "JOB_NAME", 
+    SUM("TQ0_Q_MSU_Details"."CPU_TOTAL_SECONDS") AS "CPU_TOTAL_SECONDS", 
+    SUM("TQ0_Q_MSU_Details"."BLOCKS_TRANSFERRED") AS "BLOCKS_TRANSFERRED", 
+    SUM("TQ0_Q_MSU_Details"."SERVICE_UNITS_TOT") AS "SERVICE_UNITS_TOT", 
+    SUM("TQ0_Q_MSU_Details"."SERVICE_UNITS_CPU") AS "SERVICE_UNITS_CPU", 
+    SUM(("TQ0_Q_MSU_Details"."ZIIP_CPU_SECONDS" * "TQ0_Q_MSU_Details"."SU_SEC") * "TQ0_Q_MSU_Details"."CPU_SRM_COEF") AS "SERVICE_UNITS_ZIIP", 
+    "TQ0_Q_MSU_Details"."JOB_CLASS" AS "JOB_CLASS", 
+    "TQ0_Q_MSU_Details"."REPORT_CLASS" AS "REPORT_CLASS", 
+    "TQ0_Q_MSU_Details"."SERVICE_CLASS" AS "SERVICE_CLASS", 
+    "TQ0_Q_MSU_Details"."RACF_USER_ID" AS "RACF_USER_ID", 
+    "TQ0_Q_MSU_Details"."JOB_NUMBER" AS "JOB_NUMBER", 
+    "TQ0_Q_MSU_Details"."WORKLOAD_GROUP" AS "WORKLOAD_GROUP", 
+    SUM("TQ0_Q_MSU_Details"."ZIIP_CPU_SECONDS") AS "ZIIP_CPU_SECONDS", 
+    SUM("TQ0_Q_MSU_Details"."ELAPSE_TIME") AS "ELAPSE_TIME", 
+    "TQ0_Q_MSU_Details"."DATE0" AS "DATE0", 
+    SUM(HOUR("TQ0_Q_MSU_Details"."DATETIME")) AS "HOUR0", 
+    "TQ0_Q_MSU_Details"."environment" AS "environment", 
+    "TQ0_Q_MSU_Details"."System_Code" AS "System_Code", 
+    SUM("TQ0_Q_MSU_Details"."CPC_TYPE_u") AS "CPC_Type", 
+    SUM("TQ0_Q_MSU_Details"."CPC_MODEL_u") AS "CPC_model", 
+    SUM("TQ0_Q_MSU_Details"."ZIIP_u") AS "zIIP", 
+    SUM("TQ0_Q_MSU_Details"."A_LP_LPAR_u") AS "C_LP_van_LPAR", 
+    SUM("TQ0_Q_MSU_Details"."CPU_SRM_COEF_u") AS "CPU_SRM_coefficient", 
+    SUM("TQ0_Q_MSU_Details"."SU_SEC_MODEL_u") AS "SU_Sec_model", 
+    SUM("TQ0_Q_MSU_Details"."SU_SEC_u") AS "SU_Sec", 
+    SUM("TQ0_Q_MSU_Details"."MIPS_MSU_MODEL_u") AS "MIPS_MSU_Model", 
+    SUM("TQ0_Q_MSU_Details"."CAP_CPC_MIPS_u") AS "Capacity_CPC_in_MIPS", 
+    SUM("TQ0_Q_MSU_Details"."CAP_CPC_MSU_u") AS "Capacity_cpc_in_MSU", 
+    SUM("TQ0_Q_MSU_Details"."A_CP_CPC_u") AS "Aantal__CP_s_op_de_CPC", 
+    SUM(((("TQ0_Q_MSU_Details"."SERVICE_UNITS_CPU" / 3600) / NULLIF("TQ0_Q_MSU_Details"."A_PROCESSOR", 0)) * "TQ0_Q_MSU_Details"."S_W") / NULLIF("TQ0_Q_MSU_Details"."A_PROCESSOR" * 1000000, 0)) AS "Estimated_MSU", 
+    SUM(("TQ0_Q_MSU_Details"."SERVICE_UNITS_CPU" / NULLIF("TQ0_Q_MSU_Details"."CPU_SRM_COEF", 0)) / NULLIF("TQ0_Q_MSU_Details"."SU_SEC", 0)) AS "Verbruik_CPU_seconden", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND") AS "Verbruik_MIPS", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND1") AS "Verbruik_MSU", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND2") AS "Verbruik_MIPS_op_uurbasis", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND3") AS "Verbruik_MSU_op_uurbasis", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND4") AS "Werkelijk_verbruik_MIPS", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND5") AS "Werkelijk_verbruik_MSU", 
+    SUM(
+        CASE 
+            WHEN "TQ0_Q_MSU_Details"."ZIIP" > 0 THEN "TQ0_Q_MSU_Details"."C_ROUND6"
+            ELSE 0
+        END) AS "Werkelijk_verbruik_MIPS_ZIIP", 
+    SUM("TQ0_Q_MSU_Details"."C_ROUND7") AS "Werkelijk_gebruik_MSU_ZIIP"
+FROM
+    (
+    SELECT
+        "TTS021_FTPT_LPAR"."FOOTPRINT" AS "Footprint", 
+        LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) AS "LPAR", 
+        "TTS021_JOBADDR1_H"."DATETIME" AS "DATETIME", 
+        "TTS021_JOBADDR1_H"."READER_TIMESTAMP" AS "READER_TIMESTAMP", 
+        "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" AS "SUBSYSTEM_ID", 
+        "TTS021_JOBADDR1_H"."JOB_NAME" AS "JOB_NAME", 
+        "TTS021_JOBADDR1_H"."JOB_CLASS" AS "JOB_CLASS", 
+        "TTS021_JOBADDR1_H"."REPORT_CLASS" AS "REPORT_CLASS", 
+        "TTS021_JOBADDR1_H"."SERVICE_CLASS" AS "SERVICE_CLASS", 
+        "TTS021_JOBADDR1_H"."RACF_USER_ID" AS "RACF_USER_ID", 
+        "TTS021_JOBADDR1_H"."JOB_NUMBER" AS "JOB_NUMBER", 
+        "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" AS "WORKLOAD_GROUP", 
+        date("TTS021_JOBADDR1_H"."DATETIME") AS "DATE0", 
+        CASE 
+            WHEN 
+                LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                    'A190', 
+                    'A290', 
+                    'A390', 
+                    'FC00', 
+                    'FD00', 
+                    'FE00', 
+                    'FF00', 
+                    'FG00', 
+                    'FH00', 
+                    'FI00', 
+                    'FK00', 
+                    'K100', 
+                    'K200', 
+                    'FR00', 
+                    'FP00' )
+                THEN
+                    'PR'
+            ELSE 
+                
+                CASE 
+                    WHEN 
+                        LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                            'FA00', 
+                            'FB00', 
+                            'FJ00', 
+                            'K300', 
+                            'K400', 
+                            'FL00', 
+                            'FM00', 
+                            'FN00' )
+                        THEN
+                            'ET'
+                    ELSE 'ST'
+                END
+        END AS "environment", 
+        CASE 
+            WHEN 
+                CASE 
+                    WHEN 
+                        "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                            'A84E', 
+                            'B84E', 
+                            'FBNM', 
+                            'FBNS' )
+                        THEN
+                            'XFBN'
+                    ELSE 'ABNAMRO'
+                END = 'XFBN'
+                THEN
+                    'ZF'
+            ELSE 
+                
+                CASE 
+                    WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                    ELSE 
+                        
+                        CASE 
+                            WHEN 
+                                SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                    'PD', 
+                                    'PW', 
+                                    'PM', 
+                                    'PK', 
+                                    'PJ', 
+                                    'PO', 
+                                    'AD', 
+                                    'AW', 
+                                    'AM', 
+                                    'AK', 
+                                    'AJ', 
+                                    'AO', 
+                                    'XD', 
+                                    'XW', 
+                                    'XM', 
+                                    'XK', 
+                                    'XJ', 
+                                    'XO', 
+                                    'SD', 
+                                    'SW', 
+                                    'SM', 
+                                    'SK', 
+                                    'SJ', 
+                                    'SO' )
+                                THEN
+                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                            ELSE 'ZZ'
+                        END
+                END
+        END AS "System_Code", 
+        "TTS021_JOBADDR1_H"."CPU_TOTAL_SECONDS" AS "CPU_TOTAL_SECONDS", 
+        "TTS021_JOBADDR1_H"."BLOCKS_TRANSFERRED" AS "BLOCKS_TRANSFERRED", 
+        "TTS021_JOBADDR1_H"."SERVICE_UNITS_TOT" AS "SERVICE_UNITS_TOT", 
+        "TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" AS "SERVICE_UNITS_CPU", 
+        "TTS021_JOBADDR1_H"."ZIIP_CPU_SECONDS" AS "ZIIP_CPU_SECONDS", 
+        "TTS021_FTPT_LPAR"."SU_SEC" AS "SU_SEC", 
+        "TTS021_FTPT_LPAR"."CPU_SRM_COEF" AS "CPU_SRM_COEF", 
+        "TTS021_JOBADDR1_H"."ELAPSE_TIME" AS "ELAPSE_TIME", 
+        "TTS021_FTPT_LPAR"."CPC_TYPE" AS "CPC_TYPE", 
+        "TTS021_FTPT_LPAR"."CPC_MODEL" AS "CPC_MODEL", 
+        "TTS021_FTPT_LPAR"."ZIIP" AS "ZIIP", 
+        "TTS021_FTPT_LPAR"."A_LP_LPAR" AS "A_LP_LPAR", 
+        "TTS021_FTPT_LPAR"."SU_SEC_MODEL" AS "SU_SEC_MODEL", 
+        "TTS021_FTPT_LPAR"."MIPS_MSU_MODEL" AS "MIPS_MSU_MODEL", 
+        "TTS021_FTPT_LPAR"."CAP_CPC_MIPS" AS "CAP_CPC_MIPS", 
+        "TTS021_FTPT_LPAR"."CAP_CPC_MSU" AS "CAP_CPC_MSU", 
+        "TTS021_FTPT_LPAR"."A_CP_CPC" AS "A_CP_CPC", 
+        "TTS021_FTPT_LPAR"."A_PROCESSOR" AS "A_PROCESSOR", 
+        "TTS021_FTPT_LPAR"."S_W" AS "S_W", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF("TTS021_FTPT_LPAR"."A_CP_CPC" * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MIPS", 6) AS "C_ROUND", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF("TTS021_FTPT_LPAR"."A_CP_CPC" * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MSU", 6) AS "C_ROUND1", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF("TTS021_FTPT_LPAR"."A_CP_CPC" * 3600, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MIPS", 6) AS "C_ROUND2", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF("TTS021_FTPT_LPAR"."A_CP_CPC" * 3600, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MSU", 6) AS "C_ROUND3", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF(("TTS021_FTPT_LPAR"."A_CP_CPC" + "TTS021_FTPT_LPAR"."ZIIP") * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MIPS", 6) AS "C_ROUND4", 
+        ROUND(((("TTS021_JOBADDR1_H"."SERVICE_UNITS_CPU" / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF(("TTS021_FTPT_LPAR"."A_CP_CPC" + "TTS021_FTPT_LPAR"."ZIIP") * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MSU", 6) AS "C_ROUND5", 
+        ROUND(((((("TTS021_JOBADDR1_H"."ZIIP_CPU_SECONDS" * "TTS021_FTPT_LPAR"."SU_SEC") * "TTS021_FTPT_LPAR"."CPU_SRM_COEF") / NULLIF("TTS021_FTPT_LPAR"."CPU_SRM_COEF", 0)) / NULLIF("TTS021_FTPT_LPAR"."SU_SEC", 0)) / NULLIF("TTS021_FTPT_LPAR"."ZIIP" * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MIPS", 6) AS "C_ROUND6", 
+        ROUND(("TTS021_JOBADDR1_H"."ZIIP_CPU_SECONDS" / NULLIF("TTS021_FTPT_LPAR"."A_CP_CPC" * 14400, 0)) * "TTS021_FTPT_LPAR"."CAP_CPC_MSU", 6) AS "C_ROUND7", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."CPC_TYPE"
+            ELSE NULL
+        END AS "CPC_TYPE_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."CPC_MODEL"
+            ELSE NULL
+        END AS "CPC_MODEL_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."ZIIP"
+            ELSE NULL
+        END AS "ZIIP_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."A_LP_LPAR"
+            ELSE NULL
+        END AS "A_LP_LPAR_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."CPU_SRM_COEF"
+            ELSE NULL
+        END AS "CPU_SRM_COEF_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."SU_SEC_MODEL"
+            ELSE NULL
+        END AS "SU_SEC_MODEL_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."SU_SEC"
+            ELSE NULL
+        END AS "SU_SEC_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."MIPS_MSU_MODEL"
+            ELSE NULL
+        END AS "MIPS_MSU_MODEL_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."CAP_CPC_MIPS"
+            ELSE NULL
+        END AS "CAP_CPC_MIPS_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."CAP_CPC_MSU"
+            ELSE NULL
+        END AS "CAP_CPC_MSU_u", 
+        CASE 
+            WHEN 
+                ROW_NUMBER()
+                    OVER(
+                        PARTITION BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT", 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")), 
+                            "TTS021_JOBADDR1_H"."DATETIME", 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP", 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NAME", 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS", 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS", 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS", 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID", 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER", 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP", 
+                            date("TTS021_JOBADDR1_H"."DATETIME"), 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID"
+                        ORDER BY
+                            "TTS021_FTPT_LPAR"."FOOTPRINT" ASC, 
+                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) ASC, 
+                            "TTS021_JOBADDR1_H"."DATETIME" ASC, 
+                            "TTS021_JOBADDR1_H"."READER_TIMESTAMP" ASC, 
+                            "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NAME" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."REPORT_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."SERVICE_CLASS" ASC, 
+                            "TTS021_JOBADDR1_H"."RACF_USER_ID" ASC, 
+                            "TTS021_JOBADDR1_H"."JOB_NUMBER" ASC, 
+                            "TTS021_JOBADDR1_H"."WORKLOAD_GROUP" ASC, 
+                            date("TTS021_JOBADDR1_H"."DATETIME") ASC, 
+                            CASE 
+                                WHEN 
+                                    LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                        'A190', 
+                                        'A290', 
+                                        'A390', 
+                                        'FC00', 
+                                        'FD00', 
+                                        'FE00', 
+                                        'FF00', 
+                                        'FG00', 
+                                        'FH00', 
+                                        'FI00', 
+                                        'FK00', 
+                                        'K100', 
+                                        'K200', 
+                                        'FR00', 
+                                        'FP00' )
+                                    THEN
+                                        'PR'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN 
+                                            LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+                                                'FA00', 
+                                                'FB00', 
+                                                'FJ00', 
+                                                'K300', 
+                                                'K400', 
+                                                'FL00', 
+                                                'FM00', 
+                                                'FN00' )
+                                            THEN
+                                                'ET'
+                                        ELSE 'ST'
+                                    END
+                            END ASC, 
+                            CASE 
+                                WHEN 
+                                    CASE 
+                                        WHEN 
+                                            "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" IN ( 
+                                                'A84E', 
+                                                'B84E', 
+                                                'FBNM', 
+                                                'FBNS' )
+                                            THEN
+                                                'XFBN'
+                                        ELSE 'ABNAMRO'
+                                    END = 'XFBN'
+                                    THEN
+                                        'ZF'
+                                ELSE 
+                                    
+                                    CASE 
+                                        WHEN "TTS021_JOBADDR1_H"."SUBSYSTEM_ID" <> 'JES2' THEN 'ZZ'
+                                        ELSE 
+                                            
+                                            CASE 
+                                                WHEN 
+                                                    SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 1, 2) IN ( 
+                                                        'PD', 
+                                                        'PW', 
+                                                        'PM', 
+                                                        'PK', 
+                                                        'PJ', 
+                                                        'PO', 
+                                                        'AD', 
+                                                        'AW', 
+                                                        'AM', 
+                                                        'AK', 
+                                                        'AJ', 
+                                                        'AO', 
+                                                        'XD', 
+                                                        'XW', 
+                                                        'XM', 
+                                                        'XK', 
+                                                        'XJ', 
+                                                        'XO', 
+                                                        'SD', 
+                                                        'SW', 
+                                                        'SM', 
+                                                        'SK', 
+                                                        'SJ', 
+                                                        'SO' )
+                                                    THEN
+                                                        SUBSTR("TTS021_JOBADDR1_H"."JOB_NAME", 3, 2)
+                                                ELSE 'ZZ'
+                                            END
+                                    END
+                            END ASC, 
+                            "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" ASC
+                    ) = 1
+                THEN
+                    "TTS021_FTPT_LPAR"."A_CP_CPC"
+            ELSE NULL
+        END AS "A_CP_CPC_u"
+    FROM
+        "FEPDDRLP"."TTS021_FTPT_LPAR" "TTS021_FTPT_LPAR"
+            INNER JOIN "FEPDDRLT"."TTS021_JOBADDR1_H" "TTS021_JOBADDR1_H"
+            ON "TTS021_FTPT_LPAR"."MVS_SYSTEM_ID" = "TTS021_JOBADDR1_H"."MVS_SYSTEM_ID" 
+    WHERE 
+        "TTS021_FTPT_LPAR"."FOOTPRINT" = 'B' AND
+        LTRIM(RTRIM("TTS021_JOBADDR1_H"."MVS_SYSTEM_ID")) IN ( 
+            'A290', 
+            'FB00', 
+            'FC00', 
+            'FD00', 
+            'FG00', 
+            'FI00', 
+            'FK00', 
+            'FL00', 
+            'FN00', 
+            'FR00', 
+            'K100', 
+            'K300' ) AND
+        "TTS021_JOBADDR1_H"."DATETIME" >= '2023-10-23-09.00.00' AND
+        "TTS021_JOBADDR1_H"."DATETIME" <= '2023-10-23-12.00.00.00'
+    ) "TQ0_Q_MSU_Details" 
+GROUP BY 
+    "TQ0_Q_MSU_Details"."Footprint", 
+    "TQ0_Q_MSU_Details"."LPAR", 
+    "TQ0_Q_MSU_Details"."DATETIME", 
+    "TQ0_Q_MSU_Details"."READER_TIMESTAMP", 
+    "TQ0_Q_MSU_Details"."SUBSYSTEM_ID", 
+    "TQ0_Q_MSU_Details"."JOB_NAME", 
+    "TQ0_Q_MSU_Details"."JOB_CLASS", 
+    "TQ0_Q_MSU_Details"."REPORT_CLASS", 
+    "TQ0_Q_MSU_Details"."SERVICE_CLASS", 
+    "TQ0_Q_MSU_Details"."RACF_USER_ID", 
+    "TQ0_Q_MSU_Details"."JOB_NUMBER", 
+    "TQ0_Q_MSU_Details"."WORKLOAD_GROUP", 
+    "TQ0_Q_MSU_Details"."DATE0", 
+    "TQ0_Q_MSU_Details"."environment", 
+    "TQ0_Q_MSU_Details"."System_Code" FOR FETCH ONLY
